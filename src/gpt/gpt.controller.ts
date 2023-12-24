@@ -7,13 +7,11 @@ export class GptController {
 
   constructor(private readonly gptService: GptService) {}
 
-
   @Post('orthography-check')
   orthographyCheck(
     @Body() orthographyDto: OrthographyDto,
   ) {
     return this.gptService.orthographyCheck(orthographyDto);
   }
-
 
 }
