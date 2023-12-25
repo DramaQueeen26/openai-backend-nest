@@ -36,8 +36,6 @@ export class GptController {
 
       const piece = chunk.choices[0].delta.content || ''
 
-      console.log(piece);
-
       res.write(piece)
 
     }
