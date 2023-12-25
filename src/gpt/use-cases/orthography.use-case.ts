@@ -4,7 +4,6 @@ interface Options {
   prompt: string;
 }
 
-
 /**
  * Performs an orthography check on a given prompt using the OpenAI API.
  * @param openai - An instance of the OpenAI class used to make API requests.
