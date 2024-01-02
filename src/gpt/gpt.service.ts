@@ -1,23 +1,36 @@
 import * as path from 'path';
 import * as fs from 'fs';
+
 import { Injectable, NotFoundException } from '@nestjs/common';
 
 import OpenAI from 'openai';
 
-import { orthographyCheckUseCase, prosConsDicusserStreamUseCase, prosConsDicusserUseCase, textToAudioUseCase, translateUseCase } from './use-cases';
-import { OrthographyDto, ProsConsDiscusserDto, TextToAudioDto, TranslateDto } from './dtos';
+import {
+  audioToTextUseCase,
+  orthographyCheckUseCase,
+  prosConsDicusserStreamUseCase,
+  prosConsDicusserUseCase,
+  textToAudioUseCase,
+  translateUseCase,
+} from './use-cases';
+import {
+  OrthographyDto,
+  ProsConsDiscusserDto,
+  TextToAudioDto,
+  TranslateDto,
+} from './dtos';
 
 @Injectable()
 export class GptService {
-
   private openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY,
-  })
+  });
 
   // Solo va a llamar casos de uso
+
   async orthographyCheck(orthographyDto: OrthographyDto) {
-    return await orthographyCheckUseCase( this.openai, {
-      prompt: orthographyDto.prompt
+    return await orthographyCheckUseCase(this.openai, {
+      prompt: orthographyDto.prompt,
     });
   }
 
@@ -29,7 +42,7 @@ export class GptService {
     return await prosConsDicusserStreamUseCase(this.openai, { prompt });
   }
 
-  async translateText({ prompt, lang }: TranslateDto ) {
+  async translateText({ prompt, lang }: TranslateDto) {
     return await translateUseCase(this.openai, { prompt, lang });
   }
 
@@ -51,5 +64,9 @@ export class GptService {
     return filePath;
   }
 
+
+  async audioToText( audioFile: Express.Multer.File, prompt?: string ) {
+    return await audioToTextUseCase( this.openai, { audioFile, prompt } );
+  }
 
 }

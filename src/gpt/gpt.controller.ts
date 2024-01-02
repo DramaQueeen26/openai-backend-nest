@@ -1,5 +1,10 @@
-import { Body, Controller, Get, HttpStatus, Param, Post, Res } from '@nestjs/common';
-import { Response } from 'express';
+import { Body, Controller, FileTypeValidator, Get, HttpStatus, MaxFileSizeValidator, Param, ParseFilePipe, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import type { Response } from 'express';
+import { diskStorage } from 'multer';
+
+
+
 import { GptService } from './gpt.service';
 import { OrthographyDto, ProsConsDiscusserDto, TextToAudioDto, TranslateDto } from './dtos';
 
@@ -8,12 +13,14 @@ export class GptController {
 
   constructor(private readonly gptService: GptService) {}
 
+
   @Post('orthography-check')
   orthographyCheck(
     @Body() orthographyDto: OrthographyDto,
   ) {
     return this.gptService.orthographyCheck(orthographyDto);
   }
+
 
   @Post('pros-cons-discusser')
   prosConsDicusser(
@@ -25,24 +32,24 @@ export class GptController {
   @Post('pros-cons-discusser-stream')
   async prosConsDicusserStream(
     @Body() prosConsDiscusserDto: ProsConsDiscusserDto,
-    @Res() res: Response
+    @Res() res: Response,
   ) {
-    const stream = await this.gptService.prosConsDicusserStream(prosConsDiscusserDto);
+     const stream = await this.gptService.prosConsDicusserStream(prosConsDiscusserDto);
 
+  
     res.setHeader('Content-Type', 'application/json');
-    res.status( HttpStatus.OK )
+    res.status( HttpStatus.OK );
 
-    for await ( const chunk of stream ) {
-
-      const piece = chunk.choices[0].delta.content || ''
-
-      res.write(piece)
-
+    for await( const chunk of stream ) {
+      const piece = chunk.choices[0].delta.content || '';
+      // console.log(piece);
+      res.write(piece);
     }
 
     res.end();
 
   }
+
 
   @Post('translate')
   translateText(
@@ -64,7 +71,7 @@ export class GptController {
 
   }
 
-
+  
   @Post('text-to-audio')
   async textToAudio(
     @Body() textToAudioDto: TextToAudioDto,
@@ -77,5 +84,38 @@ export class GptController {
     res.sendFile(filePath);
 
   }
+
+
+  @Post('audio-to-text')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './generated/uploads',
+        filename: (req, file, callback) => {
+          const fileExtension = file.originalname.split('.').pop();
+          const fileName = `${ new Date().getTime() }.${ fileExtension }`;
+          return callback(null, fileName);
+        }
+      })
+    })
+  )
+  async audioToText(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 1000 * 1024 * 5, message: 'File is bigger than 5 mb ' }),
+          new FileTypeValidator({ fileType: 'audio/*' })
+        ]
+      })
+    ) file: Express.Multer.File,
+  ) {
+    
+    return this.gptService.audioToText(file);
+  }
+
+
+
+
+
 
 }

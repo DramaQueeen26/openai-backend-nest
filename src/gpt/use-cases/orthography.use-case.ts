@@ -4,26 +4,23 @@ interface Options {
   prompt: string;
 }
 
-/**
- * Performs an orthography check on a given prompt using the OpenAI API.
- * @param openai - An instance of the OpenAI class used to make API requests.
- * @param options - An object containing the prompt to be checked.
- * @returns The parsed JSON response from the OpenAI API.
- */
-export const orthographyCheckUseCase = async (openai: OpenAI, options: Options) => {
+
+export const orthographyCheckUseCase = async( openai: OpenAI,  options: Options ) => {
+
   const { prompt } = options;
+
 
   const completion = await openai.chat.completions.create({
     messages: [
-      {
-        role: "system",
+      { 
+        role: "system", 
         content: `
         Te serán proveídos textos en español con posibles errores ortográficos y gramaticales,
         Las palabras usadas deben de existir en el diccionario de la Real Academia Española,
-        Debes de responder en formato JSON,
-        tu tarea es corregirlos y retornar información soluciones,
+        Debes de responder en formato JSON, 
+        tu tarea es corregirlos y retornar información soluciones, 
         también debes de dar un porcentaje de acierto por el usuario,
-
+        
 
         Si no hay errores, debes de retornar un mensaje de felicitaciones.
 
@@ -33,15 +30,15 @@ export const orthographyCheckUseCase = async (openai: OpenAI, options: Options) 
           errors: string[], // ['error -> solución']
           message: string, //  Usa emojis y texto para felicitar al usuario
         }
-
-
+        
+        
         `
       },
       {
         role: 'user',
         content: prompt,
       }
-    ],
+  ],
     model: "gpt-3.5-turbo-1106",
     temperature: 0.3,
     max_tokens: 150,
@@ -50,7 +47,9 @@ export const orthographyCheckUseCase = async (openai: OpenAI, options: Options) 
     }
   });
 
+  // console.log(completion);
   const jsonResp = JSON.parse(completion.choices[0].message.content);
 
   return jsonResp;
+
 }

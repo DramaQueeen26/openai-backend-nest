@@ -1,5 +1,7 @@
 import { IsInt, IsOptional, IsString } from 'class-validator';
 
+
+
 export class OrthographyDto {
 
   @IsString()
@@ -8,5 +10,6 @@ export class OrthographyDto {
   @IsInt()
   @IsOptional()
   readonly maxTokens?: number;
+
 
 }
