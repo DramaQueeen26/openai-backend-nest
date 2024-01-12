@@ -7,11 +7,8 @@ import OpenAI from 'openai';
 
 import {
   audioToTextUseCase,
-<<<<<<< HEAD
   imageGenerationUseCase,
   imageVariationUseCase,
-=======
->>>>>>> 5585c804888faa185104d823f6775d8bf0bd38c3
   orthographyCheckUseCase,
   prosConsDicusserStreamUseCase,
   prosConsDicusserUseCase,
@@ -19,21 +16,15 @@ import {
   translateUseCase,
 } from './use-cases';
 import {
-<<<<<<< HEAD
   AudioToTextDto,
   ImageGenerationDto,
   ImageVariationDto,
-=======
->>>>>>> 5585c804888faa185104d823f6775d8bf0bd38c3
   OrthographyDto,
   ProsConsDiscusserDto,
   TextToAudioDto,
   TranslateDto,
 } from './dtos';
-<<<<<<< HEAD
 
-=======
->>>>>>> 5585c804888faa185104d823f6775d8bf0bd38c3
 
 @Injectable()
 export class GptService {
@@ -79,7 +70,6 @@ export class GptService {
     return filePath;
   }
 
-<<<<<<< HEAD
   async audioToText(
     audioFile: Express.Multer.File,
     audioToTextDto: AudioToTextDto,
@@ -109,11 +99,6 @@ export class GptService {
 
   async geneateImageVariation( { baseImage }: ImageVariationDto ) {
     return imageVariationUseCase( this.openai, { baseImage } );
-=======
-
-  async audioToText( audioFile: Express.Multer.File, prompt?: string ) {
-    return await audioToTextUseCase( this.openai, { audioFile, prompt } );
->>>>>>> 5585c804888faa185104d823f6775d8bf0bd38c3
   }
 
 }

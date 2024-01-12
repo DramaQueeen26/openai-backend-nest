@@ -12,11 +12,7 @@ export const audioToTextUseCase = async( openai:OpenAI, options: Options ) => {
   
   const { prompt, audioFile} = options;
 
-<<<<<<< HEAD
   console.log({ prompt });
-=======
-  // console.log({ prompt, audioFile });
->>>>>>> 5585c804888faa185104d823f6775d8bf0bd38c3
 
   const response = await openai.audio.transcriptions.create({
     model: 'whisper-1',

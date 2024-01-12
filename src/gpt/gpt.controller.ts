@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import {
   Body,
   Controller,
@@ -13,14 +12,10 @@ import {
   UploadedFile,
   UseInterceptors,
 } from '@nestjs/common';
-=======
-import { Body, Controller, FileTypeValidator, Get, HttpStatus, MaxFileSizeValidator, Param, ParseFilePipe, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
->>>>>>> 5585c804888faa185104d823f6775d8bf0bd38c3
 import { FileInterceptor } from '@nestjs/platform-express';
 import type { Response } from 'express';
 import { diskStorage } from 'multer';
 
-<<<<<<< HEAD
 import { GptService } from './gpt.service';
 import {
   AudioToTextDto,
@@ -31,23 +26,15 @@ import {
   TextToAudioDto,
   TranslateDto,
 } from './dtos';
-=======
-
-
-import { GptService } from './gpt.service';
-import { OrthographyDto, ProsConsDiscusserDto, TextToAudioDto, TranslateDto } from './dtos';
->>>>>>> 5585c804888faa185104d823f6775d8bf0bd38c3
 
 @Controller('gpt')
 export class GptController {
   constructor(private readonly gptService: GptService) {}
 
-
   @Post('orthography-check')
   orthographyCheck(@Body() orthographyDto: OrthographyDto) {
     return this.gptService.orthographyCheck(orthographyDto);
   }
-
 
   @Post('pros-cons-discusser')
   prosConsDicusser(@Body() prosConsDiscusserDto: ProsConsDiscusserDto) {
@@ -59,24 +46,13 @@ export class GptController {
     @Body() prosConsDiscusserDto: ProsConsDiscusserDto,
     @Res() res: Response,
   ) {
-<<<<<<< HEAD
     const stream =
       await this.gptService.prosConsDicusserStream(prosConsDiscusserDto);
-=======
-     const stream = await this.gptService.prosConsDicusserStream(prosConsDiscusserDto);
->>>>>>> 5585c804888faa185104d823f6775d8bf0bd38c3
 
-  
     res.setHeader('Content-Type', 'application/json');
-<<<<<<< HEAD
     res.status(HttpStatus.OK);
 
     for await (const chunk of stream) {
-=======
-    res.status( HttpStatus.OK );
-
-    for await( const chunk of stream ) {
->>>>>>> 5585c804888faa185104d823f6775d8bf0bd38c3
       const piece = chunk.choices[0].delta.content || '';
       // console.log(piece);
       res.write(piece);
@@ -84,7 +60,6 @@ export class GptController {
 
     res.end();
   }
-
 
   @Post('translate')
   translateText(@Body() translateDto: TranslateDto) {
@@ -98,21 +73,11 @@ export class GptController {
   ) {
     const filePath = await this.gptService.textToAudioGetter(fileId);
 
-<<<<<<< HEAD
     res.setHeader('Content-Type', 'audio/mp3');
     res.status(HttpStatus.OK);
     res.sendFile(filePath);
   }
 
-=======
-    res.setHeader('Content-Type','audio/mp3');
-    res.status(HttpStatus.OK);
-    res.sendFile(filePath);
-
-  }
-
-  
->>>>>>> 5585c804888faa185104d823f6775d8bf0bd38c3
   @Post('text-to-audio')
   async textToAudio(
     @Body() textToAudioDto: TextToAudioDto,
@@ -120,21 +85,11 @@ export class GptController {
   ) {
     const filePath = await this.gptService.textToAudio(textToAudioDto);
 
-<<<<<<< HEAD
     res.setHeader('Content-Type', 'audio/mp3');
     res.status(HttpStatus.OK);
     res.sendFile(filePath);
   }
 
-=======
-    res.setHeader('Content-Type','audio/mp3');
-    res.status(HttpStatus.OK);
-    res.sendFile(filePath);
-
-  }
-
-
->>>>>>> 5585c804888faa185104d823f6775d8bf0bd38c3
   @Post('audio-to-text')
   @UseInterceptors(
     FileInterceptor('file', {
@@ -142,25 +97,16 @@ export class GptController {
         destination: './generated/uploads',
         filename: (req, file, callback) => {
           const fileExtension = file.originalname.split('.').pop();
-<<<<<<< HEAD
           const fileName = `${new Date().getTime()}.${fileExtension}`;
           return callback(null, fileName);
         },
       }),
     }),
-=======
-          const fileName = `${ new Date().getTime() }.${ fileExtension }`;
-          return callback(null, fileName);
-        }
-      })
-    })
->>>>>>> 5585c804888faa185104d823f6775d8bf0bd38c3
   )
   async audioToText(
     @UploadedFile(
       new ParseFilePipe({
         validators: [
-<<<<<<< HEAD
           new MaxFileSizeValidator({
             maxSize: 1000 * 1024 * 5,
             message: 'File is bigger than 5 mb ',
@@ -192,21 +138,5 @@ export class GptController {
   async imageVariation(@Body() imageVariationDto: ImageVariationDto) {
     return await this.gptService.geneateImageVariation(imageVariationDto);
   }
-=======
-          new MaxFileSizeValidator({ maxSize: 1000 * 1024 * 5, message: 'File is bigger than 5 mb ' }),
-          new FileTypeValidator({ fileType: 'audio/*' })
-        ]
-      })
-    ) file: Express.Multer.File,
-  ) {
-    
-    return this.gptService.audioToText(file);
-  }
-
-
-
-
-
->>>>>>> 5585c804888faa185104d823f6775d8bf0bd38c3
 
 }
